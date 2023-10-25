@@ -5,8 +5,6 @@ import Footer from "@/layout/footer/footer";
 import BreadcrumbArea from "../components/breadcrumb/breadcrumb-area";
 import brd_bg from "@/assets/img/bg/breadcrumb_bg01.jpg";
 import brd_img from "@/assets/img/team/breadcrumb_team.png";
-import TeamInfoArea from "../components/team/team-info-area";
-import TeamDetailsArea from "../components/team/team-details-area";
 import VideoArea from "../components/video/video-area";
 
 export const metadata: Metadata = {
@@ -32,11 +30,9 @@ export default function TeamDetailsPage() {
         {/* breadcrumb area end */}
 
         {/* team info start */}
-        <TeamInfoArea />
         {/* team info end */}
 
         {/* team details area start */}
-        <TeamDetailsArea />
         {/* team details area end */}
 
         {/* video area start */}

@@ -19,6 +19,7 @@ const InventoryContent = () => {
         })
       );
       const data = await Promise.all(request);
+      //@ts-ignore
       setData(data);
     } catch (error) {
       console.error(error);

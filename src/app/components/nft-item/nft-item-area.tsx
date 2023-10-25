@@ -32,6 +32,7 @@ const NftItemArea = () => {
       <div className="container custom-container">
         <div className="row justify-content-center">
           {data.slice(0, 3).map((item) => (
+            //@ts-ignore
             <div key={item.id} className="col-xxl-4 col-xl-5 col-lg-6 col-md-9">
               <NftItemBox item={item} />
             </div>
