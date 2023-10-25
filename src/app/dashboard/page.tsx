@@ -1,6 +1,5 @@
 "use client";
 
-import { Metadata } from "next";
 import Wrapper from "@/layout/wrapper";
 import { useState } from "react";
 import DashboardContent from "./DashboardContent";
@@ -8,10 +7,6 @@ import InventoryContent from "./InventoryContent";
 import MarketplaceContent from "./MarketplaceContent";
 import ManageTeamsContent from "./ManageTeamsContent";
 import ExploreContent from "./ExploreContent";
-
-export const metadata: Metadata = {
-  title: "Dashboard",
-};
 
 export default function ContactPage() {
   const [selectedButton, setSelectedButton] = useState("Dashboard");
@@ -42,10 +37,9 @@ export default function ContactPage() {
               <button
                 key={index}
                 onClick={() => setSelectedButton(item.name)}
-                className={`${
-                  selectedButton === item.name ? "btn-selected" : "btn"
-                }`}
-                // className="w-full h-[10%] bg-heading text-dark rounded-lg font-semibold transition-all duration-300 hover:opacity-70"
+                className={`${selectedButton === item.name ? "btn-selected" : "btn"
+                  }`}
+              // className="w-full h-[10%] bg-heading text-dark rounded-lg font-semibold transition-all duration-300 hover:opacity-70"
               >
                 {item.name}
               </button>
