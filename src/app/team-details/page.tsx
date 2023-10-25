@@ -8,7 +8,6 @@ import brd_img from "@/assets/img/team/breadcrumb_team.png";
 import TeamInfoArea from "../components/team/team-info-area";
 import TeamDetailsArea from "../components/team/team-details-area";
 import VideoArea from "../components/video/video-area";
-import TeamArea from "../components/team/team-area";
 
 export const metadata: Metadata = {
   title: "Team Details Page",
@@ -43,10 +42,6 @@ export default function TeamDetailsPage() {
         {/* video area start */}
         <VideoArea />
         {/* video area end */}
-
-        {/* team area start */}
-        <TeamArea />
-        {/* team area end */}
 
         {/*  */}
       </main>

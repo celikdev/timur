@@ -79,13 +79,7 @@ export default function LoginPage() {
                           onChange={(e) => setPassword(e.target.value)}
                         />
                       </form>
-                      <div className="flex-column d-flex mt-2">
-                        <Link
-                          href="/auth/forgot-password"
-                          className="link mb-5"
-                        >
-                          Şifremi Unuttum
-                        </Link>
+                      <div className="flex-column d-flex mt-6">
                         <button className="btn" onClick={() => handleLogin()}>
                           Giriş Yap
                         </button>

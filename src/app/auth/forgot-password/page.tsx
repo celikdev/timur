@@ -2,13 +2,15 @@
 
 import { Metadata } from "next";
 import Wrapper from "@/layout/wrapper";
-import Header from "@/layout/header/header";
 import Footer from "@/layout/footer/footer";
 import brd_bg from "@/assets/img/bg/breadcrumb_bg01.jpg";
 import brd_img from "@/assets/img/others/breadcrumb_img02.png";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import dynamic from "next/dynamic";
+
+const Header = dynamic(() => import("@/layout/header/header"), { ssr: false });
 
 export const metadata: Metadata = {
   title: "Giriş Yap",

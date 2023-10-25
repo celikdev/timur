@@ -24,10 +24,35 @@
     vertical-align: middle;
     font-family: var(--tg-heading-font-family);
     white-space: nowrap;
+    border: 2px solid transparent;
     &:hover {
         background: var(--tg-common-color-gray);
         color: var(--tg-common-color-white);
     }
+}
+
+.btn-selected {
+    user-select: none;
+    -moz-user-select: none;
+    background: var(--tg-common-color-black) none repeat scroll 0 0;
+    border: medium none;
+    border-radius: 2px;
+    color: var(--tg-theme-primary);
+    border: 2px solid var(--tg-theme-primary);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 15px;
+    font-weight: var(--tg-fw-extra-bold);
+    letter-spacing: .8px;
+    margin-bottom: 0;
+    padding: 15px 34px;
+    text-align: center;
+    text-transform: uppercase;
+    touch-action: manipulation;
+    @include transition(.3s);
+    vertical-align: middle;
+    font-family: var(--tg-heading-font-family);
+    white-space: nowrap;
 }
 
 /* TG Button 01 */
