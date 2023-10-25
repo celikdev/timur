@@ -1,6 +1,5 @@
 "use client";
 
-import { Metadata } from "next";
 import Wrapper from "@/layout/wrapper";
 import Header from "@/layout/header/header";
 import Footer from "@/layout/footer/footer";
@@ -11,10 +10,6 @@ import Link from "next/link";
 import { useState } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
-
-export const metadata: Metadata = {
-  title: "Giriş Yap",
-};
 
 export default function LoginPage() {
   const [cookies, setCookie] = useCookies(["token"]);
@@ -66,9 +61,8 @@ export default function LoginPage() {
                           type="email"
                           placeholder="E-Posta"
                           onClick={() => setError(false)}
-                          className={`mb-3 ${
-                            error ? "border border-danger" : ""
-                          }`}
+                          className={`mb-3 ${error ? "border border-danger" : ""
+                            }`}
                           onChange={(e) => setEmail(e.target.value)}
                         />
                         <input

@@ -1,6 +1,5 @@
 "use client";
 
-import { Metadata } from "next";
 import Wrapper from "@/layout/wrapper";
 import Header from "@/layout/header/header";
 import Footer from "@/layout/footer/footer";
@@ -12,9 +11,6 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "E-Posta Doğrulama",
-};
 
 export default function VerifyPage() {
   const router = useRouter();
