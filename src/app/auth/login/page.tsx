@@ -8,19 +8,21 @@ import brd_bg from "@/assets/img/bg/breadcrumb_bg01.jpg";
 import brd_img from "@/assets/img/others/breadcrumb_img02.png";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
+import { AppContext, useAppContext } from "@/context/app-context";
 
 export const metadata: Metadata = {
   title: "Giriş Yap",
 };
 
 export default function LoginPage() {
-  const [cookies, setCookie] = useCookies(["token"]);
+  const [cookies, setCookie] = useCookies(["token", "userID"]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
+  const { updateUser }: any = useContext(AppContext);
 
   const handleLogin = () => {
     if (!email || !password) {
@@ -37,6 +39,7 @@ export default function LoginPage() {
         window.location.href = "/";
       })
       .catch((err) => {
+        console.log(err);
         setError(true);
       });
   };

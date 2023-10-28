@@ -8,12 +8,14 @@ import InventoryContent from "./InventoryContent";
 import MarketplaceContent from "./MarketplaceContent";
 import ManageTeamsContent from "./ManageTeamsContent";
 import ExploreContent from "./ExploreContent";
+import { useCookies } from "react-cookie";
 
 export const metadata: Metadata = {
   title: "Dashboard",
 };
 
-export default function ContactPage() {
+export default function Dashboard() {
+  const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   const [selectedButton, setSelectedButton] = useState("Dashboard");
   const buttonData = [
     {
@@ -50,6 +52,15 @@ export default function ContactPage() {
                 {item.name}
               </button>
             ))}
+            <button
+              onClick={() => {
+                removeCookie("token");
+                window.location.href = "/";
+              }}
+              className="w-full h-[10%] bg-red-400 text-dark rounded-lg font-semibold transition-all duration-300 hover:border-red-400 border-2 border-transparent hover:bg-red-500"
+            >
+              Log Out
+            </button>
           </div>
           <div className="w-full h-1/3 bg-dark_light p-4 flex flex-col rounded-b-xl">
             <p className="text-center font-bold text-white mb-4">

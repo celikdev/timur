@@ -1,17 +1,20 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CustomModal from "../components/modal/modal";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import TeamCard from "../components/teams/team-card";
+import Kilic from "@/assets/img/kilic.png";
 
 const ExploreContent = () => {
-  const [cookie] = useCookies(["token"]);
+  const [cookie] = useCookies(["token", "userID"]);
   const [open, setOpen] = useState(false);
   const [confirmingModal, setConfirmingModal] = useState(false);
   const [data, setData] = useState([]);
   const [matchHistory, setMatchHistory] = useState([]);
+
+  const [details, setDetails] = useState([]);
 
   const getTeams = async () => {
     await axios
@@ -24,52 +27,70 @@ const ExploreContent = () => {
       .catch((err) => console.error(err));
   };
 
-  // const getDetails = async () => {
+  // const getMatchHistoryAndDetails = async () => {
   //   await axios
-  //           .get(
-  //             `${process.env.NEXT_PUBLIC_API_URL}/matching/${res.data.body[0].id}`,
-  //             {
-  //               headers: {
-  //                 Authorization: `Bearer ${cookie.token}`,
-  //               },
-  //             }
-  //           )
-  //           .then((detailRes) => console.log(detailRes.data.body))
+  //     .get(`${process.env.NEXT_PUBLIC_API_URL}/user/matchings`, {
+  //       headers: {
+  //         Authorization: `Bearer ${cookie.token}`,
+  //       },
+  //     })
+  //     .then((res) => setMatchHistory(res.data.body))
+  //     .catch((err) => console.error(err));
   // };
 
   const getMatchHistoryAndDetails = async () => {
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/matchings`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
-      .then((res) => setMatchHistory(res.data.body))
-      .catch((err) => console.error(err));
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/matchings`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
+      );
+
+      const matchHistories = res.data.body;
+
+      const detailedMatchHistories = await Promise.all(
+        matchHistories.map(async (match) => {
+          const detail = await getDetail(match.id);
+          return {
+            ...match,
+            detail,
+          };
+        })
+      );
+
+      setMatchHistory(detailedMatchHistories);
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  const getDetail = async (id: number) => {
+    try {
+      const detailRes = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/matching/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
+      );
+      return detailRes.data.body;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  };
+
+  console.log("matchHistory", matchHistory);
 
   useEffect(() => {
     getTeams();
     getMatchHistoryAndDetails();
   }, []);
 
-  const mock = [
-    {
-      id: 1,
-      created_at: "2023-09-29T20:56:54.376Z",
-      updated_at: "2023-09-29T21:42:42.345Z",
-      deleted_at: null,
-      miner: {
-        id: 1,
-      },
-      looter: {
-        id: 2,
-      },
-      winner: {
-        id: 2,
-      },
-    },
-  ];
   //TODO: Buranın Match History Entegrasyonuna Devam Edecegim!
   return (
     <div className="w-full py-4 flex flex-col gap-4">
@@ -151,9 +172,78 @@ const ExploreContent = () => {
           </CustomModal>
         </div>
         <div className="w-full pt-4">
-          {matchHistory.map((match, index) => (
-            <TeamCard key={index} match={match} />
-          ))}
+          {matchHistory.map((match, index) => {
+            const matchDetail = details[match.id];
+            return (
+              <div
+                key={index}
+                className="bg-dark_light_2 w-full p-4 rounded-lg relative flex"
+              >
+                <div
+                  className={`absolute h-12 w-12 -left-4 -top-4 rounded-lg flex items-center justify-center ${
+                    match.winner?.id == cookie.userID
+                      ? "bg-green-400 rounded-full font-bold"
+                      : "bg-red-400 rounded-full font-bold"
+                  }`}
+                >
+                  <h1 className="text-center w-full text-sm font-bold text-dark">
+                    {match.winner?.id == cookie.userID ? "Win" : "Lose"}
+                  </h1>
+                </div>
+                {/* <div className="w-1/5 flex flex-col gap-4 mx-10 bg-dark_light p-4 rounded-lg">
+                  <h1 className="text-xl font-bold">Gecmis Takim</h1>
+                  <div className="flex">
+                    <div className="w-1/2 flex flex-col gap-2">
+                      <h1 className="text-lg font-semibold opacity-70">
+                        Battle Points
+                      </h1>
+                      <h1 className="font-semibold text-yellow-500">0</h1>
+                    </div>
+                    <div className="w-1/2 flex flex-col gap-2">
+                      <h1 className="text-lg font-semibold opacity-70">
+                        Mine Points
+                      </h1>
+                      <h1 className="font-semibold text-yellow-500">1</h1>
+                    </div>
+                  </div>
+                </div> */}
+                <div className="w-full bg-dark_light grid grid-cols-3 grid-rows-1 rounded-2xl">
+                  {match?.detail?.ducks?.map((duck: any, index: Key) => (
+                    <div
+                      key={index}
+                      className="flex flex-col items-center justify-center bg-dark_light_2 rounded-lg m-2 transition-all duration-300 hover:brightness-90"
+                    >
+                      <div className="flex flex-col items-center justify-center">
+                        <img
+                          src={process.env.NEXT_PUBLIC_API_URL + duck.photo}
+                          className="w-14 h-14"
+                        />
+                        <h1 className="font-bold text-sm">{duck.name}</h1>
+                      </div>
+                      <div className="flex gap-1 justify-center items-center">
+                        <img src={Kilic.src} alt="kilic" className="w-8 h-8" />
+                        <h1>{duck.base_power}</h1>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* {team?.ducks &&
+                   Array(3 - team?.ducks.length)
+                     .fill(null)
+                     .map((_, idx) => (
+                       <button
+                         disabled={disabled}
+                         onClick={() => setModalOpen(true)}
+                         key={idx}
+                         className="flex flex-col items-center justify-center bg-dark_light_2 rounded-lg m-2 transition-all duration-300 hover:brightness-90"
+                       >
+                         <h1 className="font-black text-4xl">?</h1>
+                       </button>
+                     ))} */}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

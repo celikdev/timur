@@ -26,7 +26,6 @@ const NftItemArea = () => {
     getDucks();
   }, []);
 
-  console.log(data);
   return (
     <section className="nft-item__area">
       <div className="container custom-container">

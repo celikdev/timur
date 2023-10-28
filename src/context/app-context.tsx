@@ -1,9 +1,11 @@
-import React, { useState, createContext,useContext } from "react";
+import React, { useState, createContext, useContext } from "react";
 
 interface AppContextType {
   isEnter: boolean;
   handleMouseEnter: () => void;
   handleMouseLeave: () => void;
+  user: any;
+  updateUser: (user: any) => void;
 }
 
 export const AppContext = createContext<AppContextType>({} as AppContextType);
@@ -16,9 +18,16 @@ export const useAppContext = () => {
   return context;
 };
 
-
-const ContextProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
+const ContextProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [isEnter, setIsEnter] = useState<boolean>(false);
+
+  const [user, setUser] = useState({});
+
+  const updateUser = (user: any) => {
+    setUser(user);
+  };
 
   // handle mouse enter
   const handleMouseEnter = () => {
@@ -33,6 +42,8 @@ const ContextProvider: React.FC<{ children: React.ReactNode }> = ({children}) =>
     isEnter,
     handleMouseEnter,
     handleMouseLeave,
+    user,
+    updateUser,
   };
 
   return <AppContext.Provider value={values}>{children}</AppContext.Provider>;
