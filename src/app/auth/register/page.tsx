@@ -1,5 +1,4 @@
 "use client";
-import { Metadata } from "next";
 import Wrapper from "@/layout/wrapper";
 import Header from "@/layout/header/header";
 import Footer from "@/layout/footer/footer";
@@ -9,10 +8,6 @@ import Image from "next/image";
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-export const metadata: Metadata = {
-  title: "Kayıt Ol",
-};
 
 export default function RegisterPage() {
   const router = useRouter();

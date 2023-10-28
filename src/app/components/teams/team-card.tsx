@@ -122,10 +122,16 @@ const TeamCard = ({
                   className="bg-dark flex flex-col items-center justify-center rounded-lg py-2"
                 >
                   <img
+                    //@ts-ignore
                     src={process.env.NEXT_PUBLIC_API_URL + duck?.photo}
                     className="w-12 h-12"
                   />
-                  <h1 className="font-semibold text-sm">{duck.name}</h1>
+                  <h1 className="font-semibold text-sm">
+                    {
+                      //@ts-ignore
+                      duck.name
+                    }
+                  </h1>
                 </button>
               ))}
             </div>

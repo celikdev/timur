@@ -1,6 +1,5 @@
 "use client";
 
-import { Metadata } from "next";
 import Wrapper from "@/layout/wrapper";
 import { useState } from "react";
 import DashboardContent from "./DashboardContent";
@@ -9,10 +8,6 @@ import MarketplaceContent from "./MarketplaceContent";
 import ManageTeamsContent from "./ManageTeamsContent";
 import ExploreContent from "./ExploreContent";
 import { useCookies } from "react-cookie";
-
-export const metadata: Metadata = {
-  title: "Dashboard",
-};
 
 export default function Dashboard() {
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
