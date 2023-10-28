@@ -61,6 +61,7 @@ const ExploreContent = () => {
         })
       );
 
+      //@ts-ignore
       setMatchHistory(detailedMatchHistories);
     } catch (err) {
       console.error(err);
@@ -173,6 +174,7 @@ const ExploreContent = () => {
         </div>
         <div className="w-full pt-4">
           {matchHistory.map((match, index) => {
+            //@ts-ignore
             const matchDetail = details[match.id];
             return (
               <div
@@ -180,14 +182,16 @@ const ExploreContent = () => {
                 className="bg-dark_light_2 w-full p-4 rounded-lg relative flex"
               >
                 <div
-                  className={`absolute h-12 w-12 -left-4 -top-4 rounded-lg flex items-center justify-center ${
-                    match.winner?.id == cookie.userID
-                      ? "bg-green-400 rounded-full font-bold"
-                      : "bg-red-400 rounded-full font-bold"
-                  }`}
+                  //@ts-ignore
+                  className={`absolute h-12 w-12 -left-4 -top-4 rounded-lg flex items-center justify-center ${match.winner?.id == cookie.userID
+                    ? "bg-green-400 rounded-full font-bold"
+                    : "bg-red-400 rounded-full font-bold"
+                    }`}
                 >
                   <h1 className="text-center w-full text-sm font-bold text-dark">
-                    {match.winner?.id == cookie.userID ? "Win" : "Lose"}
+                    {
+                      //@ts-ignore
+                      match.winner?.id == cookie.userID ? "Win" : "Lose"}
                   </h1>
                 </div>
                 {/* <div className="w-1/5 flex flex-col gap-4 mx-10 bg-dark_light p-4 rounded-lg">
@@ -208,24 +212,26 @@ const ExploreContent = () => {
                   </div>
                 </div> */}
                 <div className="w-full bg-dark_light grid grid-cols-3 grid-rows-1 rounded-2xl">
-                  {match?.detail?.ducks?.map((duck: any, index: Key) => (
-                    <div
-                      key={index}
-                      className="flex flex-col items-center justify-center bg-dark_light_2 rounded-lg m-2 transition-all duration-300 hover:brightness-90"
-                    >
-                      <div className="flex flex-col items-center justify-center">
-                        <img
-                          src={process.env.NEXT_PUBLIC_API_URL + duck.photo}
-                          className="w-14 h-14"
-                        />
-                        <h1 className="font-bold text-sm">{duck.name}</h1>
+                  {
+                    //@ts-ignore
+                    match?.detail?.ducks?.map((duck: any, index: Key) => (
+                      <div
+                        key={index}
+                        className="flex flex-col items-center justify-center bg-dark_light_2 rounded-lg m-2 transition-all duration-300 hover:brightness-90"
+                      >
+                        <div className="flex flex-col items-center justify-center">
+                          <img
+                            src={process.env.NEXT_PUBLIC_API_URL + duck.photo}
+                            className="w-14 h-14"
+                          />
+                          <h1 className="font-bold text-sm">{duck.name}</h1>
+                        </div>
+                        <div className="flex gap-1 justify-center items-center">
+                          <img src={Kilic.src} alt="kilic" className="w-8 h-8" />
+                          <h1>{duck.base_power}</h1>
+                        </div>
                       </div>
-                      <div className="flex gap-1 justify-center items-center">
-                        <img src={Kilic.src} alt="kilic" className="w-8 h-8" />
-                        <h1>{duck.base_power}</h1>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
 
                   {/* {team?.ducks &&
                    Array(3 - team?.ducks.length)
