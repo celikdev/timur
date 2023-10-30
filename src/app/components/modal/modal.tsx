@@ -1,7 +1,13 @@
 import React from "react";
 import Modal from "react-modal";
 
-const CustomModal = ({ modalIsOpen, setModalIsOpen, children }: any) => {
+const CustomModal = ({
+  modalIsOpen,
+  setModalIsOpen,
+  children,
+  width,
+  height,
+}: any) => {
   const closeModal = () => {
     setModalIsOpen(false);
   };
@@ -22,8 +28,8 @@ const CustomModal = ({ modalIsOpen, setModalIsOpen, children }: any) => {
           right: "auto",
           bottom: "auto",
           marginRight: "-50%",
-          width: "44%",
-          height: "46%",
+          width: width || "44%",
+          height: height || "46%",
           transform: "translate(-50%, -50%)",
           backgroundColor: "#24282E",
           borderWidth: 0,

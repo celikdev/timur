@@ -9,11 +9,7 @@ const MarketplaceContent = () => {
 
   const getMarketplace = async () => {
     try {
-      const endpoints = [
-        "/marketplace/chest/list",
-        "/marketplace/potion/list",
-        "/marketplace/duck/list",
-      ];
+      const endpoints = ["/marketplace/chest/list", "/marketplace/duck/list"];
       const request = endpoints.map((endpoint) =>
         axios.get(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
           headers: {

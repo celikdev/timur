@@ -10,11 +10,7 @@ const MarketplaceCard = ({ data, name }: any) => {
 
   const handleBuy = async (x: any, type: string) => {
     const endpoint =
-      type === "chest"
-        ? "/marketplace/chest/buy"
-        : type === "duck"
-        ? "/marketplace/duck/buy"
-        : "/marketplace/potion/buy";
+      type === "chest" ? "/marketplace/chest/buy" : "/marketplace/duck/buy";
     await axios
       .post(
         `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
@@ -34,7 +30,7 @@ const MarketplaceCard = ({ data, name }: any) => {
   };
   return (
     <>
-      <div className="bg-dark_light_2 rounded-lg shadow-lg flex flex-col p-4 h-1/3 gap-2">
+      <div className="bg-dark_light_2 rounded-lg shadow-lg flex flex-col p-4 h-1/2 gap-2">
         <h1 className="font-bold">Chests</h1>
         <div className="grid grid-cols-4 grid-rows-auto gap-4 h-full overflow-y-auto overflow-x-hidden px-2">
           {/* Chests */}
@@ -65,42 +61,12 @@ const MarketplaceCard = ({ data, name }: any) => {
           )}
         </div>
       </div>
-      <div className="bg-dark_light_2 rounded-lg shadow-lg flex flex-col p-4 h-1/3 gap-2">
-        <h1 className="font-bold">Potions</h1>
-        <div className="grid grid-cols-4 grid-rows-auto gap-4 h-full overflow-y-auto overflow-x-hidden px-2">
-          {/* Potions */}
-          {data[1]?.data.body.length ? (
-            data[1]?.data.body.map((x: any, index: Key) => (
-              <div
-                key={index}
-                className="rounded-lg h-full bg-dark flex flex-col items-center justify-around"
-              >
-                <img
-                  src={process.env.NEXT_PUBLIC_API_URL + x.photo}
-                  className="w-1/3"
-                />
-                <div className="flex flex-col gap-2 items-center justify-center w-full">
-                  <h1 className="font-bold text-sm">{x.name}</h1>
-                  <h1 className="font-black text-xl">{x.price}</h1>
-                  <button className="w-3/4 bg-heading py-2 rounded-lg transition-colors duration-300 hover:bg-heading_dark">
-                    <h1 className="font-semibold text-dark text-sm">Buy</h1>
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <h1 className="font-semibold text-lg opacity-50">
-              Item Not Found!
-            </h1>
-          )}
-        </div>
-      </div>
-      <div className="bg-dark_light_2 rounded-lg shadow-lg flex flex-col px-4 py-2 h-1/3 gap-2">
+      <div className="bg-dark_light_2 rounded-lg shadow-lg flex flex-col px-4 py-2 h-1/2 gap-2">
         <h1 className="font-bold text-lg">Ducks</h1>
         <div className="grid grid-cols-4 grid-rows-auto gap-4 h-full overflow-y-auto overflow-x-hidden pr-2">
           {/* Potions */}
-          {data[2]?.data.body.length ? (
-            data[2]?.data.body.map((x: any, index: Key) => (
+          {data[1]?.data.body.length ? (
+            data[1]?.data.body.map((x: any, index: Key) => (
               <div
                 key={index}
                 className="rounded-lg h-full bg-dark flex flex-col items-center justify-around gap-2 py-4"
