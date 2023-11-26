@@ -1,4 +1,6 @@
-import React, { useState, createContext, useContext } from "react";
+import axios from "axios";
+import React, { useState, createContext, useContext, useEffect } from "react";
+import { useCookies } from "react-cookie";
 
 interface AppContextType {
   isEnter: boolean;
@@ -6,6 +8,7 @@ interface AppContextType {
   handleMouseLeave: () => void;
   user: any;
   updateUser: (user: any) => void;
+  settings: any
 }
 
 export const AppContext = createContext<AppContextType>({} as AppContextType);
@@ -22,8 +25,40 @@ const ContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isEnter, setIsEnter] = useState<boolean>(false);
+  const [cookie] = useCookies(["token"]);
 
-  const [user, setUser] = useState({});
+  const [settings, setSettings] = useState(null)
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (!settings)
+      getSettings()
+
+    if (!user)
+      getUser()
+  })
+
+  const getSettings = async () => {
+    await axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/settings`, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
+      .then((res) => setSettings(res.data.body))
+      .catch((err) => console.error(err.message));
+  }
+
+  const getUser = async () => {
+    await axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
+      .then((res) => updateUser(res.data.body))
+      .catch((err) => console.error(err.message));
+  }
 
   const updateUser = (user: any) => {
     setUser(user);
@@ -43,6 +78,7 @@ const ContextProvider: React.FC<{ children: React.ReactNode }> = ({
     handleMouseEnter,
     handleMouseLeave,
     user,
+    settings,
     updateUser,
   };
 

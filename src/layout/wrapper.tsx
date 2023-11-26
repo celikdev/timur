@@ -16,8 +16,8 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
   }, []);
   return (
     <ContextProvider>
-     <AnimateMouse/>
-      {children} 
+      <AnimateMouse />
+      {children}
       <BackToTopCom />
       <ToastContainer />
     </ContextProvider>

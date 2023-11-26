@@ -89,7 +89,7 @@ const TeamCard = ({
             className="flex flex-col items-center justify-center bg-dark_light_2 rounded-lg m-2 transition-all duration-300 hover:brightness-90"
           >
             <img
-              src={process.env.NEXT_PUBLIC_API_URL + duck.photo}
+              src={process.env.NEXT_PUBLIC_API_URL + '/' + duck.photo}
               className="w-14 h-14"
             />
             <h1 className="font-bold text-sm">{duck.name}</h1>
@@ -123,7 +123,7 @@ const TeamCard = ({
                 >
                   <img
                     //@ts-ignore
-                    src={process.env.NEXT_PUBLIC_API_URL + duck?.photo}
+                    src={process.env.NEXT_PUBLIC_API_URL + '/' + duck?.photo}
                     className="w-12 h-12"
                   />
                   <h1 className="font-semibold text-sm">

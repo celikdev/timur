@@ -10,8 +10,10 @@ import RoadMapArea from "./components/road-map/road-map-area";
 import Footer from "@/layout/footer/footer";
 import axios from "axios";
 import { useCookies } from "react-cookie";
+import { useAppContext } from "@/context/app-context";
 
 export default function Home() {
+  const { updateUser } = useAppContext()
   const [cookies, setCookie] = useCookies(["userID", "token"]);
   const getUser = async () => {
     await axios
@@ -22,6 +24,7 @@ export default function Home() {
       })
       .then((res) => {
         setCookie("userID", res.data.body.id, { path: "/" });
+        updateUser(res.data.body)
       })
       .catch((err) => console.error(err));
   };

@@ -56,7 +56,7 @@ const InventoryCard = ({ data, setSelectedChest, name }: any) => {
                 className="rounded-lg h-full bg-dark flex flex-col items-center justify-around"
               >
                 <img
-                  src={process.env.NEXT_PUBLIC_API_URL + x.photo}
+                  src={process.env.NEXT_PUBLIC_API_URL + '/' + x.photo}
                   className="w-1/3"
                 />
                 <h1 className="font-bold text-sm">{x.name}</h1>
@@ -84,7 +84,7 @@ const InventoryCard = ({ data, setSelectedChest, name }: any) => {
                 className="rounded-lg h-full bg-dark flex flex-col items-center justify-around"
               >
                 <img
-                  src={process.env.NEXT_PUBLIC_API_URL + x.photo}
+                  src={process.env.NEXT_PUBLIC_API_URL + '/' + x.photo}
                   className="w-1/3"
                 />
                 <h1 className="font-bold text-sm">{x.name}</h1>
@@ -151,7 +151,7 @@ const InventoryCard = ({ data, setSelectedChest, name }: any) => {
                   <h1 className="font-semibold text-sm">Breed Count</h1>
                 </span>
                 <img
-                  src={process.env.NEXT_PUBLIC_API_URL + x.photo}
+                  src={process.env.NEXT_PUBLIC_API_URL + '/' + x.photo}
                   className="w-1/3"
                 />
                 <h1 className="font-bold text-sm">{x.name}</h1>

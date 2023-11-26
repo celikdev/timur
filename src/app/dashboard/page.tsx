@@ -8,8 +8,11 @@ import MarketplaceContent from "./MarketplaceContent";
 import ManageTeamsContent from "./ManageTeamsContent";
 import ExploreContent from "./ExploreContent";
 import { useCookies } from "react-cookie";
+import { useAppContext } from "@/context/app-context";
+import axios from "axios";
 
 export default function Dashboard() {
+  const [user, setUser] = useState<any>(null);
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   const [selectedButton, setSelectedButton] = useState("Dashboard");
   const buttonData = [
@@ -29,6 +32,21 @@ export default function Dashboard() {
       name: "Explore",
     },
   ];
+
+  const getUser = async () => {
+    await axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
+      .then((res) => setUser(res.data.body))
+      .catch((err) => console.error(err.message));
+  }
+
+  if (!user)
+    getUser()
+
   return (
     <Wrapper>
       {/* <h1>Dashboard</h1> */}
@@ -39,10 +57,9 @@ export default function Dashboard() {
               <button
                 key={index}
                 onClick={() => setSelectedButton(item.name)}
-                className={`${
-                  selectedButton === item.name ? "btn-selected" : "btn"
-                }`}
-                // className="w-full h-[10%] bg-heading text-dark rounded-lg font-semibold transition-all duration-300 hover:opacity-70"
+                className={`${selectedButton === item.name ? "btn-selected" : "btn"
+                  }`}
+              // className="w-full h-[10%] bg-heading text-dark rounded-lg font-semibold transition-all duration-300 hover:opacity-70"
               >
                 {item.name}
               </button>
@@ -56,6 +73,9 @@ export default function Dashboard() {
             >
               Log Out
             </button>
+            <div className="text-center text-white">
+              BALANCE <br /> {user?.balance}
+            </div>
           </div>
           <div className="w-full h-1/3 bg-dark_light p-4 flex flex-col rounded-b-xl">
             <p className="text-center font-bold text-white mb-4">
