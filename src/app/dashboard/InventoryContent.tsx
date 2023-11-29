@@ -38,7 +38,6 @@ const InventoryContent = () => {
   }, []);
 
   const [visible, setVisible] = useState(true);
-
   const [earnedItems, setEarnedItems] = useState([] as any);
 
   const openChest = async () => {
@@ -54,7 +53,10 @@ const InventoryContent = () => {
           },
         }
       )
-      .then((res) => setEarnedItems(res.data.body))
+      .then((res) => {
+        setEarnedItems(res.data.body)
+        location.reload()
+      })
       .catch((err) => console.error(err));
   };
 
@@ -88,7 +90,7 @@ const InventoryContent = () => {
                     >
                       <>
                         <img
-                          src={process.env.NEXT_PUBLIC_API_URL + item.photo}
+                          src={process.env.NEXT_PUBLIC_API_URL + '/' + item.photo}
                           alt="earned-item"
                           className="w-14 h-14"
                         />
@@ -112,15 +114,15 @@ const InventoryContent = () => {
                     <div className="w-full h-5/6 flex flex-col items-center justify-between">
                       <img
                         src={
-                          process.env.NEXT_PUBLIC_API_URL + selectedChest?.photo
+                          process.env.NEXT_PUBLIC_API_URL + '/' + selectedChest?.photo
                         }
                         alt="chest-photo"
                         onMouseEnter={() => setAnimate((prev) => !prev)}
                         onAnimationEnd={() => setAnimate((prev) => !prev)}
-                        className={`w-28 h-28 ${
-                          animate ? "animate-shake" : ""
-                        }`}
+                        className={`w-28 h-28 ${animate ? "animate-shake" : ""
+                          }`}
                       />
+                      {selectedChest.name}
                       <button
                         onClick={() => {
                           setOpenAnimation(true);

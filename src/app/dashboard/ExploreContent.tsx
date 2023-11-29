@@ -85,7 +85,7 @@ const ExploreContent = () => {
       );
 
       //@ts-ignore
-      setMatchHistory(detailedMatchHistories);
+      setMatchHistory(detailedMatchHistories.reverse());
     } catch (err) {
       console.error(err);
     }
@@ -581,10 +581,20 @@ const ExploreContent = () => {
                       <h1 className="text-center w-full text-sm font-bold text-dark">
                         {
                           //@ts-ignore
+                          match.miner?.id == cookie.userID && "Mining"
+                        }
+                        {
+                          //@ts-ignore
+                          match.looter?.id == cookie.userID && "Looting"
+                        }
+                        <br />
+                        {
+                          //@ts-ignore
                           match.winner?.id == cookie.userID ? "Win" : "Lose"
                         }
                       </h1>
                     </div>
+
                     {/* <div className="w-1/5 flex flex-col gap-4 mx-10 bg-dark_light p-4 rounded-lg">
                   <h1 className="text-xl font-bold">Gecmis Takim</h1>
                   <div className="flex">
