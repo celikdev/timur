@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import MarketplaceCard from "../components/marketplace-card/marketplace-card";
+import { client } from "../client";
 
 const MarketplaceContent = () => {
   const [cookie] = useCookies(["token"]);
@@ -11,7 +12,7 @@ const MarketplaceContent = () => {
     try {
       const endpoints = ["/marketplace/chest/list", "/marketplace/duck/list"];
       const request = endpoints.map((endpoint) =>
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+        client.get(endpoint, {
           headers: {
             Authorization: `Bearer ${cookie.token}`,
           },

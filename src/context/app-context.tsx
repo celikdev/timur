@@ -1,3 +1,4 @@
+import { client } from "@/app/client";
 import axios from "axios";
 import React, { useState, createContext, useContext, useEffect } from "react";
 import { useCookies } from "react-cookie";
@@ -36,28 +37,25 @@ const ContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
     if (!user)
       getUser()
-  })
+  }, [])
 
   const getSettings = async () => {
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/settings`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
-      .then((res) => setSettings(res.data.body))
-      .catch((err) => console.error(err.message));
+    const res = await client.get('settings', {
+      headers: {
+        Authorization: `Bearer ${cookie.token}`,
+      },
+    })
+    setSettings(res.data.body)
   }
 
   const getUser = async () => {
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
-      .then((res) => updateUser(res.data.body))
-      .catch((err) => console.error(err.message));
+    const res = await client.get('/user/me', {
+      headers: {
+        Authorization: `Bearer ${cookie.token}`,
+      },
+    })
+
+    updateUser(res.data.body)
   }
 
   const updateUser = (user: any) => {

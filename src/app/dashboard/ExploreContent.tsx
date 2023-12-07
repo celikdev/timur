@@ -9,6 +9,7 @@ import Kilic from "@/assets/img/kilic.png";
 import { HashLoader } from "react-spinners";
 import MinerCard from "./MinerCard";
 import { useAppContext } from "@/context/app-context";
+import { client } from "../client";
 
 export enum ExplorePageEnum {
   HISTORY = 'HISTORY',
@@ -40,36 +41,22 @@ const ExploreContent = () => {
   const { updateUser, user } = useAppContext()
 
   const getTeams = async () => {
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/teams`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
-      .then((res) => setData(res.data.body))
-      .catch((err) => console.error(err));
-  };
+    const res = await client.get('user/teams', {
+      headers: {
+        Authorization: `Bearer ${cookie.token}`,
+      },
+    })
 
-  // const getMatchHistoryAndDetails = async () => {
-  //   await axios
-  //     .get(`${process.env.NEXT_PUBLIC_API_URL}/user/matchings`, {
-  //       headers: {
-  //         Authorization: `Bearer ${cookie.token}`,
-  //       },
-  //     })
-  //     .then((res) => setMatchHistory(res.data.body))
-  //     .catch((err) => console.error(err));
-  // };
+    setData(res.data.body)
+  };
 
   const getMatchHistoryAndDetails = async () => {
     try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/user/matchings`,
-        {
-          headers: {
-            Authorization: `Bearer ${cookie.token}`,
-          },
-        }
+      const res = await client.get('/user/matchings', {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      }
       );
 
       const matchHistories = res.data.body;
@@ -93,14 +80,12 @@ const ExploreContent = () => {
 
   const getDetail = async (id: number) => {
     try {
-      const detailRes = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/matching/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${cookie.token}`,
-          },
-        }
-      );
+      const detailRes = await client.get(`/matching/${id}`, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      });
+
       return detailRes.data.body;
     } catch (err) {
       console.error(err);
@@ -109,127 +94,76 @@ const ExploreContent = () => {
   };
 
   const getCurrentMatch = async () => {
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/matching`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
-      .then((res) => {
-        setCurrentMatch(res.data.body);
-        // if (res.data.body && res.data.body.created_at) {
-        //   // @ts-ignore
-        //   setWaitingTeam(null);
-        //   setSearchMatch(false);
-        //   const endDate = new Date(res.data.body.end_date);
+    const res = await client.get('/user/matching', {
+      headers: {
+        Authorization: `Bearer ${cookie.token}`,
+      },
+    })
 
-        //   // End tarihini localStorage'a kaydet
-        //   localStorage.setItem("endDate", endDate.toISOString());
-
-        //   // Kalan süreyi hesapla ve ayarla
-        //   // @ts-ignore
-        //   setTimeLeft(endDate - new Date());
-        // }
-      })
-      .catch((err) => console.error(err));
+    setCurrentMatch(res.data.body);
   };
 
   const handleStartGame = async () => {
     setMatchStarterLoader(true);
     if (!selectedTeamID) return;
 
-    if (!selectedLooting)
-      await axios
-        .post(
-          `${process.env.NEXT_PUBLIC_API_URL}/matching/mine`,
-          {
-            team_id: selectedTeamID,
-            potion_id: selectedPotion
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${cookie.token}`,
-            },
-          }
-        )
-        .then((res) => location.reload())
-        .catch((err) => console.error(err));
-
-    else {
-      await axios
-        .post(
-          `${process.env.NEXT_PUBLIC_API_URL}/matching/loot`,
-          {
-            matching_id: selectedLooting.id,
-            team_id: selectedTeamID
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${cookie.token}`,
-            },
-          }
-        )
-        .catch((err) => alert(err.response.data.message));
-
-      if (selectedPotion)
-        await axios
-          .post(
-            `${process.env.NEXT_PUBLIC_API_URL}/matching/potion`,
-            {
-              id: selectedLooting.id,
-              potion: selectedPotion
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${cookie.token}`,
-              },
-            }
-          )
-          .catch((err) => alert(err.response.data.message));
-    }
-  };
-
-  const waitingForMatch = async () => {
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/me`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
-      .then((res) => {
-        updateUser(res.data.body)
-
-        if (res.data.body.matchingTeam) {
-          setSearchMatch(true);
-          setWaitingTeam(res.data.body.matchingTeam);
-        } else {
-          setSearchMatch(false);
-        }
-      })
-      .catch((err) => console.error(err));
-  };
-
-  const handleExitGame = async () => {
-    await axios
-      .put(
-        `${process.env.NEXT_PUBLIC_API_URL}/matching`,
-        {
-          matching: 0,
-        },
+    if (!selectedLooting) {
+      await client.post('/matching/mine', {
+        team_id: selectedTeamID,
+        potion_id: selectedPotion
+      },
         {
           headers: {
             Authorization: `Bearer ${cookie.token}`,
           },
         }
       )
-      .then((res) => {
-        waitingForMatch();
-        // @ts-ignore
-        setSelectedTeamID(null);
-        // @ts-ignore
-        setSelectedType(null);
-      })
-      .catch((err) => console.error(err));
+
+      location.reload()
+    }
+
+    else {
+      await client.post('matching/loot', {
+        matching_id: selectedLooting.id,
+        team_id: selectedTeamID
+      },
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
+      )
+        .catch((err) => alert(err.response.data.message));
+
+      if (selectedPotion)
+        await client.post('matching/potion', {
+          id: selectedLooting.id,
+          potion: selectedPotion
+        },
+          {
+            headers: {
+              Authorization: `Bearer ${cookie.token}`,
+            },
+          }
+        )
+          .catch((err) => alert(err.response.data.message));
+    }
+  };
+
+  const waitingForMatch = async () => {
+    const res = await client.get('/user/me', {
+      headers: {
+        Authorization: `Bearer ${cookie.token}`,
+      },
+    })
+    updateUser(res.data.body)
+
+    if (res.data.body.matchingTeam) {
+      setSearchMatch(true);
+      setWaitingTeam(res.data.body.matchingTeam);
+    }
+    else
+      setSearchMatch(false);
   };
 
   const [timeLeft, setTimeLeft] = useState();
@@ -287,16 +221,13 @@ const ExploreContent = () => {
   }, [currentPage])
 
   async function getMiners() {
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/matching/miners`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
-      .then((res) => {
-        setMiners(res.data.body);
-      })
-      .catch((err) => console.error(err));
+    const res = await client.get('/matching/miners', {
+      headers: {
+        Authorization: `Bearer ${cookie.token}`,
+      },
+    })
+
+    setMiners(res.data.body);
   }
 
   function getMatchingTeamDucks() {
@@ -308,14 +239,13 @@ const ExploreContent = () => {
   }
 
   async function getPotions() {
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/potions`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
-      .then((res) => setPotions(res.data.body))
-      .catch((err) => console.error(err));
+    const res = await client.get('/user/potions', {
+      headers: {
+        Authorization: `Bearer ${cookie.token}`,
+      },
+    })
+
+    setPotions(res.data.body)
   }
 
   function uniquePotions() {

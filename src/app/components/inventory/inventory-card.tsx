@@ -5,42 +5,57 @@ import Heart from "@/assets/img/heart.png";
 import CustomModal from "../modal/modal";
 import axios from "axios";
 import { useCookies } from "react-cookie";
+import { client } from "@/app/client";
 
 const InventoryCard = ({ data, setSelectedChest, name }: any) => {
   const [cookie] = useCookies(["token"]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedDuck, setSelectedDuck] = useState({} as any);
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState(0);
 
   const sellDuck = async () => {
-    await axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/marketplace/duck/sell`,
-        {
-          id: selectedDuck.id,
-          price,
+    const res = await client.put('/marketplace/duck', {
+      duck_id: selectedDuck.id,
+      price,
+    },
+      {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${cookie.token}`,
-          },
-        }
-      )
-      .then((res) => {
-        alert("Duck has been put on sale!");
-        setModalIsOpen(false);
-      })
-      .catch((err) => console.error(err));
+      }
+    )
+
+    alert("Duck has been put on sale!");
+    setModalIsOpen(false);
   };
 
   useEffect(() => {
     if (!modalIsOpen) {
       setSelectedDuck({} as any);
-      setPrice("");
+      setPrice(0);
     }
   }, [modalIsOpen]);
 
-  const filteredChests = data[1]?.data.body.filter((a) => !a.open);
+  function getArrayCounts(array: any) {
+    if (!array)
+      return []
+
+    const names = {}
+    for (let i = 0; i < array.length; i++) {
+      const element = array[i];
+      names[element.name] = (names[element.name] || 0) + 1
+    }
+
+    const filtered_array: any = []
+    for (const name in names) {
+      const item = array.findLast(x => x.name === name)
+      filtered_array.push({ ...item, count: names[name] })
+    }
+
+    return filtered_array
+  }
+
+  const filteredChests = getArrayCounts(data[1]?.data.body.filter((a) => !a.open));
   return (
     <>
       <div className="bg-dark_light_2 rounded-lg shadow-lg flex flex-col px-4 py-2 h-1/3 gap-2">
@@ -53,19 +68,20 @@ const InventoryCard = ({ data, setSelectedChest, name }: any) => {
             filteredChests.map((x: any, index: Key) => (
               <div
                 key={index}
-                className="rounded-lg h-full bg-dark flex flex-col items-center justify-around"
+                className="rounded-lg h-full bg-dark flex flex-col items-center justify-around p-2"
               >
                 <img
                   src={process.env.NEXT_PUBLIC_API_URL + '/' + x.photo}
                   className="w-1/3"
                 />
-                <h1 className="font-bold text-sm">{x.name}</h1>
+                <h1 className="font-bold text-sm text-center py-1">{x.name}</h1>
                 <button
                   onClick={() => setSelectedChest(x)}
-                  className="w-3/4 bg-heading py-2 rounded-lg transition-colors duration-300 hover:bg-heading_dark"
+                  className="w-3/4 bg-heading py-1 rounded-lg transition-colors duration-300 hover:bg-heading_dark"
                 >
                   <h1 className="font-semibold text-dark text-sm">Open</h1>
                 </button>
+                <h1 className="font-semibold text-white text-sm">x {x.count}</h1>
               </div>
             ))
           ) : (
@@ -78,16 +94,17 @@ const InventoryCard = ({ data, setSelectedChest, name }: any) => {
         <div className="grid grid-cols-4 grid-rows-auto gap-4 h-full overflow-y-auto overflow-x-hidden pr-2">
           {/* Potions */}
           {data[2]?.data.body.length ? (
-            data[2]?.data.body.map((x: any, index: Key) => (
+            getArrayCounts(data[2]?.data.body).map((x: any, index: Key) => (
               <div
                 key={index}
-                className="rounded-lg h-full bg-dark flex flex-col items-center justify-around"
+                className="rounded-lg h-full bg-dark flex flex-col items-center justify-around p-2"
               >
                 <img
                   src={process.env.NEXT_PUBLIC_API_URL + '/' + x.photo}
                   className="w-1/3"
                 />
                 <h1 className="font-bold text-sm">{x.name}</h1>
+                <h1 className="font-semibold text-white text-sm">x {x.count}</h1>
               </div>
             ))
           ) : (
@@ -107,7 +124,7 @@ const InventoryCard = ({ data, setSelectedChest, name }: any) => {
               {selectedDuck && (
                 <div className="bg-dark_light_2 p-4 rounded-lg flex flex-col items-center justify-center">
                   <img
-                    src={process.env.NEXT_PUBLIC_API_URL + selectedDuck.photo}
+                    src={process.env.NEXT_PUBLIC_API_URL + '/' + selectedDuck.photo}
                     alt="duck"
                     className="w-32 h-32"
                   />
@@ -119,14 +136,12 @@ const InventoryCard = ({ data, setSelectedChest, name }: any) => {
                 type="number"
                 placeholder="Price"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={(e) => setPrice(Number(e.target.value))}
                 className="w-2/5 bg-dark_light_2 rounded-lg p-2 text-center font-semibold text-sm"
               />
               <div className="w-full flex items-center justify-center">
                 <button
-                  onClick={() => {
-                    sellDuck();
-                  }}
+                  onClick={sellDuck}
                   className="w-2/4 bg-heading py-2 rounded-lg transition-colors duration-300 hover:bg-heading_dark"
                 >
                   <h1 className="font-semibold text-dark text-sm">Sell</h1>
@@ -144,12 +159,10 @@ const InventoryCard = ({ data, setSelectedChest, name }: any) => {
                 key={index}
                 className="rounded-lg h-full bg-dark flex flex-col items-center justify-around gap-2 py-4"
               >
-                <span className="flex w-full justify-between px-2 pt-2">
-                  <h1 className="bg-heading px-2 rounded-lg text-dark font-semibold text-sm">
-                    {x.gender ? "Male" : "Female"}
-                  </h1>
-                  <h1 className="font-semibold text-sm">Breed Count</h1>
-                </span>
+                <h1 className={`bg-heading px-2 rounded-lg text-dark font-semibold text-sm h-fit ${x.gender ? 'bg-cyan-500' : 'bg-pink-500'}`}>
+                  {x.gender ? "Male" : "Female"}
+                </h1>
+                <h1 className="font-semibold text-sm">Breed Count</h1>
                 <img
                   src={process.env.NEXT_PUBLIC_API_URL + '/' + x.photo}
                   className="w-1/3"
@@ -171,7 +184,7 @@ const InventoryCard = ({ data, setSelectedChest, name }: any) => {
                       setSelectedDuck(x);
                       setModalIsOpen(true);
                     }}
-                    className="w-3/4 bg-heading py-2 rounded-lg transition-colors duration-300 hover:bg-heading_dark"
+                    className="w-3/4 bg-heading py-1 rounded-lg transition-colors duration-300 hover:bg-heading_dark"
                   >
                     <h1 className="font-semibold text-dark text-sm">Sell</h1>
                   </button>

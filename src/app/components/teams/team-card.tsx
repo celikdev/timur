@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Key } from "react-hook-form/dist/types/path/common";
 import CustomModal from "../modal/modal";
 import { useCookies } from "react-cookie";
+import { client } from "@/app/client";
 
 const TeamCard = ({
   team,
@@ -19,14 +20,13 @@ const TeamCard = ({
   const [onRequestDuck, setOnRequestDuck] = useState();
 
   const getDucks = async () => {
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/ducks`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
-      .then((res) => setDuckData(res.data.body))
-      .catch((err) => console.error(err.message));
+    const res = await client.get('/user/ducks', {
+      headers: {
+        Authorization: `Bearer ${cookie.token}`,
+      },
+    })
+
+    setDuckData(res.data.body)
   };
 
   const selectDuck = async (duck: any) => {
@@ -36,24 +36,19 @@ const TeamCard = ({
       ? existingDuckIds
       : [...existingDuckIds, duck.id];
 
-    await axios
-      .put(
-        `${process.env.NEXT_PUBLIC_API_URL}/user/team`,
-        {
-          id: team.id,
-          ducks: updatedDucks,
+    await client.put('user/team', {
+      id: team.id,
+      ducks: updatedDucks,
+    },
+      {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${cookie.token}`,
-          },
-        }
-      )
-      .then((res) => {
-        setModalOpen(false);
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setRefreshState(true));
+      }
+    )
+
+    setModalOpen(false);
+    setRefreshState(true)
   };
 
   useEffect(() => {

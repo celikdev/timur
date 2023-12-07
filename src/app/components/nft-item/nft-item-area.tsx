@@ -5,6 +5,7 @@ import axios from "axios";
 import nft_data from "@/data/nft-data";
 import NftItemBox from "./nft-item-box";
 import { useCookies } from "react-cookie";
+import { client } from "@/app/client";
 
 const NftItemArea = () => {
   const [cookie] = useCookies(["token"]);
@@ -12,14 +13,12 @@ const NftItemArea = () => {
 
   //TODO:Burası User'dan Degil, MarketPlace'den Cekilecek!
   const getDucks = async () => {
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/user/ducks`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
-      .then((res) => setData(res.data.body))
-      .catch((err) => console.error(err.message));
+    const res = await client.get('user/ducks', {
+      headers: {
+        Authorization: `Bearer ${cookie.token}`,
+      },
+    })
+    setData(res.data.body)
   };
 
   useEffect(() => {

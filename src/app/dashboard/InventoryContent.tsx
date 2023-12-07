@@ -7,6 +7,7 @@ import CustomModal from "../components/modal/modal";
 import Kilic from "@/assets/img/kilic.png";
 
 import { HashLoader } from "react-spinners";
+import { client } from "../client";
 
 const InventoryContent = () => {
   const [cookie] = useCookies(["token"]);
@@ -19,7 +20,7 @@ const InventoryContent = () => {
     try {
       const endpoints = ["/user/ducks", "/user/chests", "/user/potions"];
       const request = endpoints.map((endpoint) =>
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+        client.get(endpoint, {
           headers: {
             Authorization: `Bearer ${cookie.token}`,
           },
@@ -41,23 +42,17 @@ const InventoryContent = () => {
   const [earnedItems, setEarnedItems] = useState([] as any);
 
   const openChest = async () => {
-    await axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/chest/open`,
-        {
-          id: selectedChest.id,
+    const res = await client.post('/chest/open', {
+      id: selectedChest.id,
+    },
+      {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${cookie.token}`,
-          },
-        }
-      )
-      .then((res) => {
-        setEarnedItems(res.data.body)
-        location.reload()
-      })
-      .catch((err) => console.error(err));
+      }
+    )
+    setEarnedItems(res.data.body)
+    location.reload()
   };
 
   useEffect(() => {
@@ -113,9 +108,7 @@ const InventoryContent = () => {
                   {selectedChest && (
                     <div className="w-full h-5/6 flex flex-col items-center justify-between">
                       <img
-                        src={
-                          process.env.NEXT_PUBLIC_API_URL + '/' + selectedChest?.photo
-                        }
+                        src={process.env.NEXT_PUBLIC_API_URL + '/' + selectedChest?.photo}
                         alt="chest-photo"
                         onMouseEnter={() => setAnimate((prev) => !prev)}
                         onAnimationEnd={() => setAnimate((prev) => !prev)}

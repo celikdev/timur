@@ -10,6 +10,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/navigation";
+import { client } from "@/app/client";
 
 
 export default function VerifyPage() {
@@ -19,15 +20,11 @@ export default function VerifyPage() {
   const [code, setCode] = useState("");
 
   const sendVerificationCode = async () => {
-    await axios
-      .post(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, { email, code })
-      .then((res) => {
-        if (res.data.status === true) {
-          setCookie("token", res.data.body);
-          router.push("/");
-        }
-      })
-      .catch((err) => console.error(err.message));
+    const res = await client.post('auth/verify', { email, code })
+    if (res.data.status === true) {
+      setCookie("token", res.data.body);
+      router.push("/");
+    }
   };
   return (
     <Wrapper>

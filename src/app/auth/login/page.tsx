@@ -11,6 +11,7 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { AppContext, useAppContext } from "@/context/app-context";
+import { client } from '@/app/client'
 
 export default function LoginPage() {
   const [cookies, setCookie] = useCookies(["token", "userID"]);
@@ -19,24 +20,20 @@ export default function LoginPage() {
   const [error, setError] = useState(false);
   const { updateUser }: any = useContext(AppContext);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       setError(true);
       return;
     }
-    axios
-      .post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-        email,
-        password,
-      })
-      .then((res) => {
-        setCookie("token", res.data.body, { path: "/" });
-        window.location.href = "/";
-      })
-      .catch((err) => {
-        console.log(err);
-        setError(true);
-      });
+
+    try {
+      const res = await client.post('/auth/login', { email, password, })
+      setCookie("token", res.data.body, { path: "/" });
+      window.location.href = "/";
+    } catch (error) {
+      console.log(error);
+      setError(true);
+    }
   };
 
   return (

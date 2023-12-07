@@ -1,13 +1,13 @@
 "use client";
-import Wrapper from "@/layout/wrapper";
-import Header from "@/layout/header/header";
-import Footer from "@/layout/footer/footer";
+import { client } from "@/app/client";
 import brd_bg from "@/assets/img/bg/breadcrumb_bg01.jpg";
 import brd_img from "@/assets/img/others/breadcrumb_img02.png";
+import Footer from "@/layout/footer/footer";
+import Header from "@/layout/header/header";
+import Wrapper from "@/layout/wrapper";
 import Image from "next/image";
-import axios from "axios";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -15,17 +15,13 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
-    await axios
-      .post(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
-        email,
-        password,
-      })
-      .then((res) => {
-        if (res.data.status === true) {
-          router.push("/auth/register/verify");
-        }
-      })
-      .catch((err) => console.error(err));
+    const res = await client.post('/auth/register', {
+      email,
+      password,
+    })
+
+    if (res.data.status === true)
+      router.push("/auth/register/verify");
   };
 
   return (
